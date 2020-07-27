@@ -2,11 +2,13 @@
   let profile;
   let msg;
   let loading = false;
+  let userId;
 
   export async function preload(page) {
     try {
       loading = true;
       const { id } = page.params;
+      userId = id;
       let url = `https://ancient-brushlands-91721.herokuapp.com/api/profile/user/${id}`;
 
       const res = await this.fetch(url);
@@ -30,6 +32,7 @@
   import Article, { formatDate } from '../../_components/Article.svelte';
   import LinkButton from '../../../components/LinkButton.svelte';
   import Profile from '../../_components/Profile.svelte';
+  import UserArticles from '../../_components/UserArticles.svelte';
 </script>
 
 <style>
@@ -82,3 +85,7 @@
 {:else if msg}
   <p>{msg.msg}</p>
 {/if}
+
+<div class="my-4">
+  <UserArticles id={userId} />
+</div>

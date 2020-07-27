@@ -27,15 +27,24 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link link-text" href="/category">Categories</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link link-text" href="/article">Articles</a>
       </li>
       <li class="nav-item">
         <a class="nav-link link-text" href="/profile">Profiles</a>
       </li>
 
+      <li class="nav-item active">
+        <a class="nav-link link-text" href="/register">
+          <i class="fal fa-user-plus" />
+          Register
+        </a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link link-text" href="/login">
+          <i class="fal fa-sign-in-alt" />
+          Login
+        </a>
+      </li>
     </ul>
   </div>
 

@@ -10348,6 +10348,10 @@ a.text-dark:focus {
   color: rgba(255, 255, 255, 0.5) !important;
 }
 
+.text-bold {
+  font-weight: bold;
+}
+
 .text-hide {
   font: 0/0 a;
   color: transparent;

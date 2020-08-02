@@ -10,7 +10,7 @@
   }
 </style>
 
-<a href={pathto} class=" btn btn-success my-2 nohover">
+<a href={pathto} class=" btn btn-primary my-2 nohover">
   <i class={`fal fa-${icon}`} />
   <span>{tagname}</span>
 </a>

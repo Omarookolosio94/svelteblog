@@ -49,7 +49,7 @@
 {#if loading}
   <Loader />
 {:else if profile}
-  <div class="header-title bg-success">
+  <div class="header-title bg-primary">
     <h2 class="mb-2">{profile.user.name}</h2>
     <p>
       Email: {profile.user.email}

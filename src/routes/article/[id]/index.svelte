@@ -36,7 +36,7 @@
 {#if loading}
   <Loader />
 {:else if article}
-  <div class="header-title bg-success">
+  <div class="header-title bg-primary">
     <h2 class="mb-2">{article.title}</h2>
     <p class="text-capitalize">
       Author: {article.author}

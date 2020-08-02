@@ -1,6 +1,6 @@
 <script>
   import { goto } from '@sapper/app';
-  import { userDetail, errorMsg } from '../../stores';
+  import { userToken, errorMsg, authUser } from '../../stores';
 
   const url = 'https://ancient-brushlands-91721.herokuapp.com/api/user';
 
@@ -10,6 +10,15 @@
     password: '',
     password2: ''
   };
+
+  export async function preload(page) {
+    try {
+      authUser();
+      console.log('Authenticated');
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +35,7 @@
       if (res.status === 200) {
         const detail = await res.json();
 
-        userDetail.set(detail);
+        userToken.set(detail);
         errorMsg.set({
           type: 'success',
           message: [{ msg: 'Success Registration Completed' }]
@@ -104,7 +113,7 @@
           bind:value={user.password2} />
       </div>
 
-      <button type="submit" class="btn btn-success w-100">
+      <button type="submit" class="btn btn-primary w-100">
         <i class="fal fa-sign-in-alt" />
         Login
       </button>

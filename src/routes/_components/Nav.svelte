@@ -34,6 +34,7 @@
   <div class="container">
     <a class="navbar-brand " href="/">
       <img src="arlogo.svg" alt="airview" />
+
     </a>
 
     <ul class="navbar-nav navigation">
@@ -51,6 +52,9 @@
       </li>
 
       {#if $userToken}
+        <li class="nav-item">
+          <a class="nav-link link-text" href="/profile/me">Welcome</a>
+        </li>
         <li class="nav-item active">
           <a class="nav-link link-text" href="/" on:click={logOut}>
             <i class="fal fa-sign-in-alt" />

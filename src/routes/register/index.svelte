@@ -1,6 +1,8 @@
 <script>
   import { goto } from '@sapper/app';
-  import { userToken, errorMsg, authUser } from '../../stores';
+  import { userToken, errorMsg } from '../../stores';
+  import { onMount } from 'svelte';
+  import { authUser } from '../../utilis/utilis';
 
   const url = 'https://ancient-brushlands-91721.herokuapp.com/api/user';
 
@@ -11,14 +13,9 @@
     password2: ''
   };
 
-  export async function preload(page) {
-    try {
-      authUser();
-      console.log('Authenticated');
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  onMount(async () => {
+    authUser($userToken);
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();

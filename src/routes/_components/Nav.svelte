@@ -53,7 +53,7 @@
 
       {#if $userToken}
         <li class="nav-item">
-          <a class="nav-link link-text" href="/profile/me">Welcome</a>
+          <a class="nav-link link-text" href="/profile/me">My Profile</a>
         </li>
         <li class="nav-item active">
           <a class="nav-link link-text" href="/" on:click={logOut}>

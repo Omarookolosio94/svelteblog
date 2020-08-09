@@ -1,10 +1,9 @@
 <script>
-  import { goto } from '@sapper/app';
-  import { userToken, errorMsg } from '../../stores';
+  import { goto, stores } from '@sapper/app';
+  import axios from 'axios';
+  // import { userToken, errorMsg } from '../../stores';
   import { onMount } from 'svelte';
   import { authUser } from '../../utilis/utilis';
-
-  const url = 'https://ancient-brushlands-91721.herokuapp.com/api/user';
 
   let user = {
     name: '',
@@ -13,46 +12,30 @@
     password2: ''
   };
 
-  onMount(async () => {
-    authUser($userToken);
-  });
+  // onMount(async () => {
+  //   authUser($userToken);
+  // });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const { session } = stores();
+
+  async function submit() {
     try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(user)
-      });
+      const res = await axios.post('/auth/register', user);
+      // $session.user = res.data;
 
-      if (res.status === 200) {
-        const detail = await res.json();
+      console.log(res);
 
-        userToken.set(detail);
-        errorMsg.set({
-          type: 'success',
-          message: [{ msg: 'Success Registration Completed' }]
-        });
-
-        goto('/');
-        user = {
-          name: '',
-          email: '',
-          password: '',
-          password2: ''
-        };
-      } else {
-        const msg = await res.json();
-        errorMsg.set({ type: 'danger', message: msg.errors });
-      }
+      user = {
+        name: '',
+        email: '',
+        password: '',
+        password2: ''
+      };
+      goto('/');
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 </script>
 
 <style>
@@ -75,7 +58,7 @@
 
   </div>
   <div class="col-10 col-md-8 col-lg-4 mx-auto">
-    <form on:submit={handleSubmit}>
+    <form on:submit|preventDefault={submit}>
       <div class="form-group">
         <label for="name">Name</label>
         <input

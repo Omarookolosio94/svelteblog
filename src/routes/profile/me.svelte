@@ -1,3 +1,12 @@
+<script context="module">
+  export async function preload() {
+    if (!userToken) {
+      console.log(userToken);
+      return this.redirect(302, '/');
+    }
+  }
+</script>
+
 <script>
   import { onMount } from 'svelte';
   import LinkButton from '../../components/LinkButton.svelte';
@@ -10,13 +19,12 @@
   let profile;
   let msg;
   let loading = false;
-
+  let token = $userToken && $userToken.token;
   onMount(async () => {
     try {
       loading = true;
 
       let url = `https://ancient-brushlands-91721.herokuapp.com/api/profile/me`;
-      let token = $userToken.token;
 
       const res = await fetch(url, {
         headers: {

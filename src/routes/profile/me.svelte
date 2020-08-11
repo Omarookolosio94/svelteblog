@@ -1,50 +1,39 @@
 <script context="module">
-  export async function preload() {
-    if (!userToken) {
-      console.log(userToken);
-      return this.redirect(302, '/');
-    }
-  }
-</script>
-
-<script>
-  import { onMount } from 'svelte';
   import LinkButton from '../../components/LinkButton.svelte';
   import { formatDate } from '../_components/Article.svelte';
   import UserArticles from '../_components/UserArticles.svelte';
-  import { userToken } from '../../stores';
   import Loader from '../../components/Loader.svelte';
   import { goto } from '@sapper/app';
+  import { url, headers } from '../index.svelte';
 
   let profile;
   let msg;
   let loading = false;
-  let token = $userToken && $userToken.token;
-  onMount(async () => {
+
+  export async function preload(page, session) {
     try {
-      loading = true;
+      const { token } = session;
 
-      let url = `https://ancient-brushlands-91721.herokuapp.com/api/profile/me`;
-
-      const res = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          'x-auth-token': token
-        }
+      if (!token) {
+        return this.redirect(302, '/');
+      }
+      const result = await this.fetch(`${url}/api/profile/me`, {
+        method: 'GET',
+        headers: { ...headers, 'x-auth-token': token }
       });
+      const res = await result.json();
 
-      if (res.status === 200) {
+      if (res.msg) {
         loading = false;
-        profile = await res.json();
+        msg = res;
       } else {
-        msg = await res.json();
-
         loading = false;
+        profile = res;
       }
     } catch (err) {
       console.log(err);
     }
-  });
+  }
 </script>
 
 <style>

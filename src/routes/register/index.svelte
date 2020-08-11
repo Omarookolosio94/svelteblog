@@ -1,9 +1,8 @@
 <script>
-  import { goto, stores } from '@sapper/app';
-  import axios from 'axios';
-  // import { userToken, errorMsg } from '../../stores';
-  import { onMount } from 'svelte';
+  import { goto } from '@sapper/app';
+  import { errorMsg, session } from '../../stores';
   import { authUser } from '../../utilis/utilis';
+  import { onMount } from 'svelte';
 
   let user = {
     name: '',
@@ -12,30 +11,46 @@
     password2: ''
   };
 
-  // onMount(async () => {
-  //   authUser($userToken);
-  // });
-
-  const { session } = stores();
-
-  async function submit() {
-    try {
-      const res = await axios.post('/auth/register', user);
-      // $session.user = res.data;
-
-      console.log(res);
-
-      user = {
-        name: '',
-        email: '',
-        password: '',
-        password2: ''
-      };
-      goto('/');
-    } catch (err) {
-      console.log(err);
+  onMount(async () => {
+    if ($session && $session.token !== null) {
+      authUser($session.token);
     }
-  }
+  });
+
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(user)
+      });
+
+      const token = await response.json();
+      if (token.errors) {
+        errorMsg.set({ type: 'danger', message: token.errors });
+      } else {
+        session.set({
+          token: token.token
+        });
+        errorMsg.set({
+          type: 'success',
+          message: [{ msg: 'Registration Successful, You are Welcome' }]
+        });
+        goto('/');
+        user = {
+          name: '',
+          email: '',
+          password: '',
+          password2: ''
+        };
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 </script>
 
 <style>
@@ -58,7 +73,7 @@
 
   </div>
   <div class="col-10 col-md-8 col-lg-4 mx-auto">
-    <form on:submit|preventDefault={submit}>
+    <form on:submit|preventDefault={handleSubmit}>
       <div class="form-group">
         <label for="name">Name</label>
         <input
@@ -95,7 +110,7 @@
 
       <button type="submit" class="btn btn-primary w-100">
         <i class="fal fa-sign-in-alt" />
-        Login
+        Register
       </button>
 
     </form>

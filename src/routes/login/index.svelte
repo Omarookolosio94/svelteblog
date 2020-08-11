@@ -1,47 +1,42 @@
 <script>
   import { goto } from '@sapper/app';
-  import { userToken, errorMsg } from '../../stores';
-
-  const url = 'https://ancient-brushlands-91721.herokuapp.com/api/auth';
+  import { errorMsg, session } from '../../stores';
 
   let user = {
     email: '',
     password: ''
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     try {
-      const res = await fetch(url, {
+      const response = await fetch('/auth/login', {
         method: 'POST',
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
         },
         body: JSON.stringify(user)
       });
 
-      if (res.status === 200) {
-        const detail = await res.json();
-
-        userToken.set(detail);
-
+      const token = await response.json();
+      if (token.errors) {
+        errorMsg.set({ type: 'danger', message: token.errors });
+      } else {
+        session.set({
+          token: token.token
+        });
         errorMsg.set({
           type: 'success',
           message: [{ msg: 'Welcome Back' }]
         });
-
         goto('/');
         user = {
           email: '',
           password: ''
         };
-      } else {
-        const msg = await res.json();
-        errorMsg.set({ type: 'danger', message: msg.errors });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 </script>
@@ -67,7 +62,7 @@
     <p class="text-bold">Welcome to Ariere</p>
   </div>
   <div class=" col-10 col-md-8 col-lg-4 mx-auto ">
-    <form on:submit={handleSubmit}>
+    <form on:submit|preventDefault={handleSubmit}>
       <div class="form-group">
         <label for="email">Email address</label>
         <input

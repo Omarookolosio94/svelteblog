@@ -1,10 +1,14 @@
 <script>
-  import { userToken, errorMsg } from '../../stores';
+  import { session, errorMsg } from '../../stores';
 
-  const logOut = async (e) => {
-    e.preventDefault();
+  async function logout() {
     try {
-      $userToken = null;
+      await fetch('/auth/logout', {
+        method: 'POST'
+      });
+
+      $session = null;
+      console.log($session);
       errorMsg.set({
         type: 'success',
         message: [{ msg: 'See You Later' }]
@@ -12,7 +16,7 @@
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 </script>
 
 <style>
@@ -51,12 +55,12 @@
         <a class="nav-link link-text" href="/profile">Profiles</a>
       </li>
 
-      {#if $userToken}
+      {#if $session}
         <li class="nav-item">
           <a class="nav-link link-text" href="/profile/me">My Profile</a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link link-text" href="/" on:click={logOut}>
+          <a class="nav-link link-text" href="/" on:click={logout}>
             <i class="fal fa-sign-in-alt" />
             Logout
           </a>

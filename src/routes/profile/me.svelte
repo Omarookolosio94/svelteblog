@@ -5,6 +5,7 @@
   import Loader from '../../components/Loader.svelte';
   import { goto } from '@sapper/app';
   import { url, headers } from '../index.svelte';
+  import { getProfile } from '../auth/api';
 
   let profile;
   let msg;
@@ -17,11 +18,14 @@
       if (!token) {
         return this.redirect(302, '/');
       }
-      const result = await this.fetch(`${url}/api/profile/me`, {
-        method: 'GET',
-        headers: { ...headers, 'x-auth-token': token }
-      });
+
+      const result = await getProfile(this.fetch, token);
+
       const res = await result.json();
+
+      if (result.status === 401) {
+        this.redirect(302, '/');
+      }
 
       if (res.msg) {
         loading = false;
@@ -34,6 +38,10 @@
       console.log(err);
     }
   }
+</script>
+
+<script>
+  import { errorMsg } from '../../stores';
 </script>
 
 <style>
